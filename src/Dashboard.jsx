@@ -1,10 +1,24 @@
 import { useEffect, useState } from "react";
+import ProjectForm from "./components/ProjectForm";
+import ProjectCard from "./components/ProjectCard";
+
+
+
+
+
 
 function Dashboard() {
-  const token = localStorage.getItem("token");
+const token = localStorage.getItem("token"); 
+const [projects, setProjects] = useState([]); 
+const [portfolio, setPortfolio] = useState(null); 
+const [showForm, setShowForm] = useState(false);
+ const [title, setTitle] = useState(""); 
+ const [description, setDescription] = useState(""); 
+ const [githubUrl, setGithubUrl] = useState("");
+ const [liveUrl, setLiveUrl] = useState("");
+  const [editingProject, setEditingProject] = useState(null);
 
-  const [projects, setProjects] = useState([]);
-  const [portfolio, setPortfolio] = useState(null);
+
 
   const API = "http://localhost:5000";
 
@@ -56,6 +70,18 @@ const createPortfolio = async () => {
 };
 
 
+const handleEdit = (project) => {
+
+  setEditingProject(project);
+  setTitle(project.title || "");
+  setDescription(project.description || "");
+  setGithubUrl(project.githubUrl || "");
+  setLiveUrl(project.liveUrl || "");
+
+  setShowForm(true);
+};
+
+
   /* 🔄 Fetch Projects */
   const fetchProjects = async () => {
     try {
@@ -82,29 +108,55 @@ const createPortfolio = async () => {
   }, []);
 
   /* ➕ Add Project */
-  const addProject = async () => {
-    try {
-      const res = await fetch(`${API}/projects`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: "New Project",
-          description: "Project description",
-          githubUrl: "#",
-          liveUrl: "#",
-        }),
-      });
 
-      if (!res.ok) throw new Error("Failed to add project");
+const saveProject = async () => {
+  try {
 
-      fetchProjects(); // ✅ refresh without reload
-    } catch (err) {
-      console.error(err.message);
+    const url = editingProject
+      ? `${API}/projects/${editingProject.id}`
+      : `${API}/projects`;
+
+    const method = editingProject
+      ? "PUT"
+      : "POST";
+
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title,
+        description,
+        githubUrl,
+        liveUrl,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to save project");
     }
-  };
+
+    fetchProjects();
+
+    setTitle("");
+    setDescription("");
+    setGithubUrl("");
+    setLiveUrl("");
+
+    setEditingProject(null);
+
+    setShowForm(false);
+
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+
+
+
 
   /* ❌ Delete Project */
   const deleteProject = async (id) => {
@@ -130,12 +182,29 @@ const createPortfolio = async () => {
       <h1 className="text-2xl font-bold">Dashboard</h1>
 
    
-  <button
-     onClick={createPortfolio}
-      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-    >
-      Create Portfolio
-  </button>
+<button
+  onClick={() => setShowForm(!showForm)}
+  className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+>
+  {showForm ? "Close Form" : "Add Project"}
+</button>
+  <div>
+
+    {showForm && (
+      <ProjectForm
+        title={title}
+        setTitle={setTitle}
+        description={description}
+        setDescription={setDescription}
+        githubUrl={githubUrl}
+        setGithubUrl={setGithubUrl}
+        liveUrl={liveUrl}
+        setLiveUrl={setLiveUrl}
+        saveProject={saveProject}
+         editingProject={editingProject}
+      />
+  )}
+  </div>
 
 
       {/* 🚫 No Token */}
@@ -162,32 +231,25 @@ const createPortfolio = async () => {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Projects</h2>
 
-          <button
-            onClick={addProject}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
-          >
-            Add Project
-          </button>
+        
         </div>
 
         {projects.length === 0 ? (
           <p className="text-gray-500">No projects yet</p>
         ) : (
-          projects.map((project) => (
-            <div
-              key={project.id}
-              className="border p-4 mb-3 rounded-lg flex justify-between items-center"
-            >
-              <h3 className="font-semibold">{project.title}</h3>
+     
+              
+        projects.map((project) => (
+          <ProjectCard
+            key={project.id}
+            project={project}
+            deleteProject={deleteProject}
+            handleEdit={handleEdit}
+          />
+        ))
 
-              <button
-                onClick={() => deleteProject(project.id)}
-                className="text-red-500 hover:text-red-700"
-              >
-                Delete
-              </button>
-            </div>
-          ))
+
+
         )}
 
       </div>
