@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import ProjectForm from "./components/ProjectForm";
 import ProjectCard from "./components/ProjectCard";
 
+import ExperienceForm from "./components/ExperienceForm";
+import ExperienceCard from "./components/ExperienceCard";
+
+
 
 
 
@@ -17,6 +21,21 @@ const [showForm, setShowForm] = useState(false);
  const [githubUrl, setGithubUrl] = useState("");
  const [liveUrl, setLiveUrl] = useState("");
   const [editingProject, setEditingProject] = useState(null);
+
+  //experience
+
+const [experiences, setExperiences] = useState([]);
+
+const [company, setCompany] = useState("");
+const [role, setRole] = useState("");
+const [expDescription, setExpDescription] = useState("");
+
+const [startDate, setStartDate] = useState("");
+const [endDate, setEndDate] = useState("");
+
+const [showExperienceForm, setShowExperienceForm] = useState(false);
+
+
 
 
 
@@ -38,6 +57,86 @@ const [showForm, setShowForm] = useState(false);
       console.error("Portfolio Error:", err.message);
     }
   };
+
+
+const fetchExperiences = async () => {
+  try {
+    const res = await fetch(`${API}/experience`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message);
+    }
+
+    setExperiences(data);
+
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+const saveExperience = async () => {
+  try {
+    const res = await fetch(`${API}/experience`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        company,
+        role,
+        description: expDescription,
+        startDate,
+        endDate,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to save experience");
+    }
+
+    fetchExperiences();
+
+    setCompany("");
+    setRole("");
+    setExpDescription("");
+    setStartDate("");
+    setEndDate("");
+
+    setShowExperienceForm(false);
+
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+
+const deleteExperience = async (id) => {
+  try {
+    const res = await fetch(`${API}/experience/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to delete experience");
+    }
+
+    fetchExperiences();
+
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
 
 
 const createPortfolio = async () => {
@@ -100,12 +199,19 @@ const handleEdit = (project) => {
     }
   };
 
+
+
   useEffect(() => {
     if (!token) return;
 
     fetchPortfolio();
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+     
+      fetchExperiences();
+  },[]);
 
   /* ➕ Add Project */
 
@@ -253,6 +359,64 @@ const saveProject = async () => {
         )}
 
       </div>
+
+   
+      {/* 🚀 Experience section */}
+<div className="bg-white p-6 rounded-xl shadow-lg border space-y-4">
+
+  <div className="flex justify-between items-center">
+
+    <h2 className="text-2xl font-bold">
+      Experience
+    </h2>
+
+    <button
+      onClick={() =>
+        setShowExperienceForm(!showExperienceForm)
+      }
+      className="bg-green-600 text-white px-4 py-2 rounded-lg"
+    >
+      {showExperienceForm
+        ? "Close Form"
+        : "Add Experience"}
+    </button>
+
+  </div>
+
+  {showExperienceForm && (
+    <ExperienceForm
+      company={company}
+      setCompany={setCompany}
+      role={role}
+      setRole={setRole}
+      description={expDescription}
+      setDescription={setExpDescription}
+      startDate={startDate}
+      setStartDate={setStartDate}
+      endDate={endDate}
+      setEndDate={setEndDate}
+      saveExperience={saveExperience}
+    />
+  )}
+
+  {experiences.length === 0 ? (
+    <p className="text-gray-500">
+      No experience added
+    </p>
+  ) : (
+    experiences.map((experience) => (
+      <ExperienceCard
+        key={experience.id}
+        experience={experience}
+        deleteExperience={deleteExperience}
+      />
+    ))
+  )}
+
+</div>
+
+
+
 
     </div>
   );
