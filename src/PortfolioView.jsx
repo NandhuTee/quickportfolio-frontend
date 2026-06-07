@@ -5,13 +5,13 @@ function PortfolioView() {
   const { username } = useParams();
   const [portfolio, setPortfolio] = useState(null);
 
-  const API = "https://quickportfolio-backend.onrender.com/";
+  const API = "http://localhost:5000";
 
   useEffect(() => {
     fetch(`${API}/portfolio/${username}`)
       .then(res => res.json())
       .then(setPortfolio);
-  }, [id]);
+  }, [username]);
 
   if (!portfolio || portfolio.message) {
     return <div>Portfolio not found</div>;

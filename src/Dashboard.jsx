@@ -6,7 +6,7 @@ function Dashboard() {
   const [projects, setProjects] = useState([]);
   const [portfolio, setPortfolio] = useState(null);
 
-  const API = "https://quickportfolio-backend.onrender.com";
+  const API = "http://localhost:5000";
 
   /* 🔄 Fetch Portfolio */
   const fetchPortfolio = async () => {
@@ -24,6 +24,37 @@ function Dashboard() {
       console.error("Portfolio Error:", err.message);
     }
   };
+
+
+const createPortfolio = async () => {
+  try {
+    const res = await fetch(`${API}/portfolio`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        bio: "My portfolio bio",
+        skills: ["React", "Node.js"],
+      }),
+    });
+
+    const data = await res.json();
+
+    console.log(data);
+
+    if (!res.ok) {
+      throw new Error(data.message);
+    }
+
+    fetchPortfolio();
+
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
 
   /* 🔄 Fetch Projects */
   const fetchProjects = async () => {
@@ -97,6 +128,15 @@ function Dashboard() {
     <div className="max-w-4xl mx-auto space-y-6">
 
       <h1 className="text-2xl font-bold">Dashboard</h1>
+
+   
+  <button
+     onClick={createPortfolio}
+      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+    >
+      Create Portfolio
+  </button>
+
 
       {/* 🚫 No Token */}
       {!token && (
