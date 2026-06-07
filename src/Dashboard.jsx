@@ -6,6 +6,10 @@ import ExperienceForm from "./components/ExperienceForm";
 import ExperienceCard from "./components/ExperienceCard";
 
 
+import SocialLinkForm from "./components/SocialLinkForm";
+import SocialLinkCard from "./components/SocialLinkCard";
+
+
 
 
 
@@ -34,6 +38,15 @@ const [startDate, setStartDate] = useState("");
 const [endDate, setEndDate] = useState("");
 
 const [showExperienceForm, setShowExperienceForm] = useState(false);
+
+//social links
+
+const [links, setLinks] = useState([]);
+
+const [platform, setPlatform] = useState("");
+const [url, setUrl] = useState("");
+
+const [showLinkForm, setShowLinkForm] = useState(false);
 
 
 
@@ -80,6 +93,60 @@ const fetchExperiences = async () => {
   }
 };
 
+const fetchLinks = async () => {
+  try {
+    const res = await fetch(`${API}/links`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message);
+    }
+
+    setLinks(data);
+
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+
+const saveLink = async () => {
+  try {
+    const res = await fetch(`${API}/links`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        platform,
+        url,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to save link");
+    }
+
+    fetchLinks();
+
+    setPlatform("");
+    setUrl("");
+
+    setShowLinkForm(false);
+
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+
+
 const saveExperience = async () => {
   try {
     const res = await fetch(`${API}/experience`, {
@@ -115,6 +182,28 @@ const saveExperience = async () => {
     console.error(err.message);
   }
 };
+
+
+const deleteLink = async (id) => {
+  try {
+    const res = await fetch(`${API}/links/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to delete link");
+    }
+
+    fetchLinks();
+
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
 
 
 const deleteExperience = async (id) => {
@@ -206,12 +295,12 @@ const handleEdit = (project) => {
 
     fetchPortfolio();
     fetchProjects();
+    fetchLinks();
+    fetchExperiences();
+
   }, []);
 
-  useEffect(() => {
-     
-      fetchExperiences();
-  },[]);
+ 
 
   /* ➕ Add Project */
 
@@ -415,6 +504,54 @@ const saveProject = async () => {
 
 </div>
 
+     {/** 🚀 SOCIAL LINKS SECTION */}
+
+<div className="bg-white p-6 rounded-xl shadow-lg border space-y-4">
+
+  <div className="flex justify-between items-center">
+
+    <h2 className="text-2xl font-bold">
+      Social Links
+    </h2>
+
+    <button
+      onClick={() =>
+        setShowLinkForm(!showLinkForm)
+      }
+      className="bg-purple-600 text-white px-4 py-2 rounded-lg"
+    >
+      {showLinkForm
+        ? "Close Form"
+        : "Add Link"}
+    </button>
+
+  </div>
+
+  {showLinkForm && (
+    <SocialLinkForm
+      platform={platform}
+      setPlatform={setPlatform}
+      url={url}
+      setUrl={setUrl}
+      saveLink={saveLink}
+    />
+  )}
+
+  {links.length === 0 ? (
+    <p className="text-gray-500">
+      No social links added
+    </p>
+  ) : (
+    links.map((link) => (
+      <SocialLinkCard
+        key={link.id}
+        link={link}
+        deleteLink={deleteLink}
+      />
+    ))
+  )}
+
+</div>
 
 
 
