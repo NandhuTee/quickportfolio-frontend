@@ -1,16 +1,220 @@
-# React + Vite
+# QuickPortfolio 🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack Portfolio CMS built with React, Node.js, Express, Prisma, and PostgreSQL.
 
-Currently, two official plugins are available:
+QuickPortfolio allows developers to manage their portfolio through a custom dashboard and automatically generate a public portfolio website.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+# ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🔐 Authentication
 
-## Expanding the ESLint configuration
+* User Registration
+* User Login
+* JWT Authentication
+* Protected Routes
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 👤 Portfolio Management
+
+* Create/Edit Portfolio
+* Bio Section
+* Skills Management
+
+## 🚀 Projects CMS
+
+* Add Projects
+* Edit Projects
+* Delete Projects
+* GitHub + Live Demo Links
+
+## 💼 Experience Management
+
+* Add Experience
+* Delete Experience
+* Timeline Display
+
+## 🔗 Social Links
+
+* Add Social Links
+* Delete Links
+* Public Portfolio Integration
+
+## 🌍 Public Portfolio Website
+
+* Dynamic Portfolio Pages
+* Responsive Design
+* Skills Section
+* Projects Grid
+* Experience Timeline
+* Social Links Section
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+* React
+* Vite
+* Tailwind CSS
+* React Router DOM
+
+## Backend
+
+* Node.js
+* Express.js
+* Prisma ORM
+* PostgreSQL
+
+## Deployment
+
+* Vercel (Frontend)
+* Render (Backend + Database)
+Live Demo
+Frontend: [https://quickportfolio-frontend-llno.vercel.app/]
+Backend API: [https://quickportfolio-backend.onrender.com/]
+
+---
+
+# 📁 Project Structure
+
+## Frontend
+
+```bash
+src/
+ ├── components/
+ ├── pages/
+ ├── router/
+ ├── App.jsx
+ └── main.jsx
+```
+
+## Backend
+
+```bash
+src/
+ ├── controllers/
+ ├── routes/
+ ├── middleware/
+ ├── prisma/
+ └── server.js
+```
+
+---
+
+# ⚙️ Installation
+
+## 1️⃣ Clone Repository
+
+```bash
+git clone <repo-url>
+```
+
+---
+
+# 🚀 Frontend Setup
+
+```bash
+cd quickportfolio-frontend
+npm install
+npm run dev
+```
+
+Frontend runs on:
+
+```bash
+http://localhost:5173
+```
+
+---
+
+# 🚀 Backend Setup
+
+```bash
+cd quickportfolio-backend
+npm install
+```
+
+Create `.env`
+
+```env
+DATABASE_URL="your_postgresql_url"
+
+JWT_SECRET="your_secret"
+
+PORT=5000
+```
+
+Run Prisma:
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+Start backend:
+
+```bash
+npm run dev
+```
+
+Backend runs on:
+
+```bash
+http://localhost:5000
+```
+
+---
+
+# 🗄️ Database Models
+
+* User
+* Portfolio
+* Project
+* Experience
+* SocialLink
+
+---
+
+# 📸 Video
+
+Video Link :[ https://youtu.be/Bth22bpWtMs]
+---
+
+# 🔮 Future Improvements
+
+* Profile Image Upload
+* PDF Resume Download
+* Contact Form
+* Blog CMS
+* Dark Mode
+* Portfolio Analytics
+* Admin Sidebar Navigation
+
+---
+
+# 🧠 What I Learned
+
+This project helped me improve my understanding of:
+
+* Full-stack architecture
+* React component design
+* REST API development
+* Prisma ORM
+* PostgreSQL integration
+* Authentication systems
+* CRUD workflows
+* Deployment debugging
+
+---
+
+# 📄 License
+
+MIT License
+
+---
+
+# 🙌 Acknowledgements
+
+Built for the GitHub Finish-Up-A-Thon Challenge.
