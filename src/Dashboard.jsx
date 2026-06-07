@@ -10,6 +10,10 @@ import SocialLinkForm from "./components/SocialLinkForm";
 import SocialLinkCard from "./components/SocialLinkCard";
 
 
+import PortfolioForm from "./components/PortfolioForm";
+import PortfolioCard from "./components/PortfolioCard";
+
+
 
 
 
@@ -47,6 +51,14 @@ const [platform, setPlatform] = useState("");
 const [url, setUrl] = useState("");
 
 const [showLinkForm, setShowLinkForm] = useState(false);
+
+//portfolio skills
+
+const [bio, setBio] = useState("");
+const [skills, setSkills] = useState("");
+
+const [showPortfolioForm, setShowPortfolioForm] =
+  useState(false);
 
 
 
@@ -182,6 +194,52 @@ const saveExperience = async () => {
     console.error(err.message);
   }
 };
+
+
+const savePortfolio = async () => {
+  try {
+
+    const method = portfolio ? "PUT" : "POST";
+
+    const res = await fetch(`${API}/portfolio`, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        bio,
+        skills: skills
+          .split(",")
+          .map((skill) => skill.trim()),
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to save portfolio");
+    }
+
+    fetchPortfolio();
+
+    setShowPortfolioForm(false);
+
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+
+const handleEditPortfolio = () => {
+
+  setBio(portfolio?.bio || "");
+
+  setSkills(
+    portfolio?.skills?.join(", ") || ""
+  );
+
+  setShowPortfolioForm(true);
+};
+
 
 
 const deleteLink = async (id) => {
@@ -408,17 +466,41 @@ const saveProject = async () => {
       )}
 
       {/* 📌 Portfolio Info */}
-      {portfolio && !portfolio.message && (
-        <div className="bg-white p-6 rounded-xl shadow-lg border">
-          <h2 className="text-xl font-semibold">
-            {portfolio.user?.name}
-          </h2>
+     
+<div className="space-y-4">
 
-          <p className="text-gray-600 mt-2">
-            {portfolio.bio || "No bio added"}
-          </p>
-        </div>
-      )}
+  <div className="flex justify-between items-center">
+
+    <h2 className="text-2xl font-bold">
+      Portfolio
+    </h2>
+
+    <button
+      onClick={handleEditPortfolio}
+      className="bg-indigo-600 text-white px-4 py-2 rounded-lg"
+    >
+      {portfolio ? "Edit Portfolio" : "Create Portfolio"}
+    </button>
+
+  </div>
+
+  {showPortfolioForm && (
+    <PortfolioForm
+      bio={bio}
+      setBio={setBio}
+      skills={skills}
+      setSkills={setSkills}
+      savePortfolio={savePortfolio}
+    />
+  )}
+
+  {portfolio && (
+    <PortfolioCard portfolio={portfolio} />
+  )}
+
+</div>
+
+
 
       {/* 🚀 Projects Section */}
       <div className="bg-white p-6 rounded-xl shadow-lg border">
