@@ -1,18 +1,24 @@
-
 function PortfolioCard({ portfolio }) {
   return (
     <div className="bg-white p-6 rounded-2xl shadow border space-y-4">
 
-      <h2 className="text-3xl font-bold">
+      {portfolio.imageUrl && (
+        <img
+          src={`http://localhost:5000${portfolio.imageUrl}`}
+          alt="Profile"
+          className="w-32 h-32 rounded-full object-cover mx-auto"
+        />
+      )}
+
+      <h2 className="text-3xl font-bold text-center">
         {portfolio.user?.name}
       </h2>
 
-      <p className="text-gray-600">
+      <p className="text-gray-600 text-center">
         {portfolio.bio}
       </p>
 
-      <div className="flex flex-wrap gap-2">
-
+      <div className="flex flex-wrap gap-2 justify-center">
         {portfolio.skills?.map((skill, index) => (
           <span
             key={index}
@@ -21,7 +27,6 @@ function PortfolioCard({ portfolio }) {
             {skill}
           </span>
         ))}
-
       </div>
 
     </div>
@@ -29,4 +34,3 @@ function PortfolioCard({ portfolio }) {
 }
 
 export default PortfolioCard;
-

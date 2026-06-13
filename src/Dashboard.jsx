@@ -19,6 +19,7 @@ import PortfolioCard from "./components/PortfolioCard";
 
 
 
+
 function Dashboard() {
 const token = localStorage.getItem("token"); 
 const [projects, setProjects] = useState([]); 
@@ -60,6 +61,11 @@ const [skills, setSkills] = useState("");
 const [showPortfolioForm, setShowPortfolioForm] =
   useState(false);
 
+//image
+
+
+const [image, setImage] = useState(null);
+
 
 
 
@@ -77,7 +83,7 @@ const [showPortfolioForm, setShowPortfolioForm] =
 
       if (!res.ok) throw new Error(data.message);
 
-      setPortfolio(data);
+      setPortfolio(data[0]);
     } catch (err) {
       console.error("Portfolio Error:", err.message);
     }
@@ -429,6 +435,42 @@ const saveProject = async () => {
     }
   };
 
+
+//uploadimage
+
+const uploadImage = async () => {
+
+  try {
+
+    const formData = new FormData();
+
+    formData.append("image", image);
+
+    const res = await fetch(
+      `${API}/portfolio/upload`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Upload failed");
+    }
+
+    fetchPortfolio();
+
+  } catch (err) {
+    console.error(err.message);
+  }
+
+};
+
+
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
 
@@ -486,11 +528,17 @@ const saveProject = async () => {
 
   {showPortfolioForm && (
     <PortfolioForm
-      bio={bio}
-      setBio={setBio}
-      skills={skills}
-      setSkills={setSkills}
-      savePortfolio={savePortfolio}
+     
+    bio={bio}
+    setBio={setBio}
+    skills={skills}
+    setSkills={setSkills}
+    savePortfolio={savePortfolio}
+
+    image={image}
+    setImage={setImage}
+    uploadImage={uploadImage}
+ 
     />
   )}
 

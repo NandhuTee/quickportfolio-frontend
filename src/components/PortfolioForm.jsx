@@ -5,6 +5,10 @@ function PortfolioForm({
   skills,
   setSkills,
   savePortfolio,
+
+  image,
+  setImage,
+  uploadImage,
 }) {
   return (
     <div className="space-y-4 border p-5 rounded-2xl bg-gray-50">
@@ -31,6 +35,26 @@ function PortfolioForm({
       >
         Save Portfolio
       </button>
+
+        
+<div className="flex gap-4 items-center">
+
+  <input
+    type="file"
+    onChange={(e) =>
+      setImage(e.target.files[0])
+    }
+  />
+
+  <button
+    onClick={uploadImage}
+    className="bg-black text-white px-4 py-2 rounded-lg"
+  >
+    Upload Image
+  </button>
+
+</div>
+
 
     </div>
   );
